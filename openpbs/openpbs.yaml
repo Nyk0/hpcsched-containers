@@ -91,6 +91,13 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+      - name: openpbs-postgres
+        image: nyk0/openpbs
+        #command: ["/bin/bash"]
+        #args: ["start-postgres.sh"]
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
       imagePullSecrets:
       - name: regcred
       volumes:
