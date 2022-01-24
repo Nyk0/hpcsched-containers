@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodes
+  namespace: hpc-nico
+spec:
+  selector:
+    net: headless
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hpc-node
+  namespace: hpc-nico
+  labels:
+     name: hpc-node
+spec:
+  selector:
+    matchLabels:
+      app: slurmd
+  serviceName: "nodes"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: slurmd
+        net: headless
+        role: compute-node
+        partition: COMPUTE
+    spec:
+      initContainers:
+      - name: init-slurmd
+        image: nyk0/slurmprobe
+        command: ["/usr/local/bin/python"]
+        args: ["probe.py"]
+        volumeMounts:
+        - mountPath: /locate
+          name: locate
+      containers:
+      - name: slurmd
+        image: nyk0/slurmcontainer
+        volumeMounts:
+        - mountPath: /run/munge
+          name: sock
+        - mountPath: /locate
+          name: locate
+        resources:
+          limits:
+            cpu: "2"
+          requests:
+            cpu: "2"
+        command: ["/usr/bin/supervise"]
+        args: ["/service/slurmd"]
+      - name: munge
+        image: nyk0/slurmmunge
+        volumeMounts:
+        - mountPath: /run/munge
+          name: sock
+        command: ["/bin/bash"]
+        args: ["start-munge.sh"]
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: sock
+        emptyDir: {}
+      - name: locate
+        emptyDir: {}
+      dnsConfig:
+        searches:
+          - nodes.hpc-nico.svc.cluster.local
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: control-node
+  namespace: hpc-nico
+  labels:
+     name: control-node
+spec:
+  selector:
+    matchLabels:
+      app: slurmctld
+  serviceName: "nodes"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: slurmctld
+        role: control-node
+        net: headless
+    spec:
+      shareProcessNamespace: true
+      containers:
+      - name: slurmconf
+        image: nyk0/slurmconf
+        volumeMounts:
+        - mountPath: /etc/slurm
+          name: slurmconf-volume
+        - mountPath: /run/munge
+          name: sock
+        - mountPath: /var/slurm
+          name: var
+        securityContext:
+          capabilities:
+            add:
+            - SYS_PTRACE
+        command: ["/usr/local/bin/python"]
+        args: ["generate_slurm_conf.py"]
+      - name: slurmctld
+        image: nyk0/slurmcontainer
+        volumeMounts:
+        - mountPath: /etc/slurm
+          name: slurmconf-volume
+        - mountPath: /run/munge
+          name: sock
+        - mountPath: /var/slurm
+          name: var
+        command: ["/usr/bin/supervise"]
+        args: ["/service/slurmctld"]
+      - name: munge
+        image: nyk0/slurmmunge
+        volumeMounts:
+        - mountPath: /run/munge
+          name: sock
+        command: ["/bin/bash"]
+        args: ["start-munge.sh"]
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: slurmconf-volume
+        emptyDir: {}
+      - name: sock
+        emptyDir: {}
+      - name: var
+        emptyDir: {}
+      dnsConfig:
+        searches:
+          - nodes.hpc-nico.svc.cluster.local

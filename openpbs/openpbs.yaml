@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodes
+  namespace: hpc-nico
+spec:
+  selector:
+    net: headless
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hpc-node
+  namespace: hpc-nico
+  labels:
+     name: hpc-node
+spec:
+  selector:
+    matchLabels:
+      app: openpbs-node
+  serviceName: "nodes"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: openpbs-node
+        net: headless
+        role: compute-node
+        partition: COMPUTE
+    spec:
+      containers:
+      - name: openpbs-node
+        image: nyk0/openpbs
+        resources:
+          limits:
+            cpu: "2"
+          requests:
+            cpu: "2"
+      imagePullSecrets:
+      - name: regcred
+      dnsConfig:
+        searches:
+          - nodes.hpc-nico.svc.cluster.local
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: control-node
+  namespace: hpc-nico
+  labels:
+     name: control-node
+spec:
+  selector:
+    matchLabels:
+      app: openpbs-server
+  serviceName: "nodes"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: openpbs-server
+        role: control-node
+        net: headless
+    spec:
+      containers:
+      - name: openpbs-server
+        image: nyk0/openpbs
+      imagePullSecrets:
+      - name: regcred
+      dnsConfig:
+        searches:
+          - nodes.hpc-nico.svc.cluster.local
