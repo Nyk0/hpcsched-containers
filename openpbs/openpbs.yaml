@@ -29,6 +29,14 @@ spec:
         role: compute-node
         partition: COMPUTE
     spec:
+      initContainers:
+      - name: openpbs-init
+        image: nyk0/openpbsinit
+        command: ["/usr/local/bin/python"]
+        args: ["generate_pbs_conf.py"]
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
       containers:
       - name: openpbs-node
         image: nyk0/openpbs
@@ -37,8 +45,14 @@ spec:
             cpu: "2"
           requests:
             cpu: "2"
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
       imagePullSecrets:
       - name: regcred
+      volumes:
+      - name: pbsconf
+        emptyDir: {}
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
@@ -63,14 +77,17 @@ spec:
         role: control-node
         net: headless
     spec:
-      containers:
-      - name: openpbs-server
-        image: nyk0/openpbs
+      initContainers:
+      - name: openpbs-init
+        image: nyk0/openpbsinit
+        command: ["/usr/local/bin/python"]
+        args: ["generate_pbs_conf.py"]
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
-      - name: openpbs-init
-        image: nyk0/openpbsinit
+      containers:
+      - name: openpbs-server
+        image: nyk0/openpbs
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
