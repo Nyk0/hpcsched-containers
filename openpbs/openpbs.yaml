@@ -92,24 +92,24 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
-        - mountPath: /var/spool/pbs/datastore
-          name: datastore
-      - name: openpbs-postgres
-        image: nyk0/openpbs
-        command: ["/bin/bash"]
-        args: ["start-postgres.sh"]
-        volumeMounts:
-        - mountPath: /pbsconf
-          name: pbsconf
-        - mountPath: /var/spool/pbs/datastore
-          name: datastore
+      #  - mountPath: /var/spool/pbs/datastore
+      #    name: datastore
+      #- name: openpbs-postgres
+      #  image: nyk0/openpbs
+      #  command: ["/bin/bash"]
+      #  args: ["start-postgres.sh"]
+      #  volumeMounts:
+      #  - mountPath: /pbsconf
+      #    name: pbsconf
+       # - mountPath: /var/spool/pbs/datastore
+       #   name: datastore
       imagePullSecrets:
       - name: regcred
       volumes:
       - name: pbsconf
         emptyDir: {}
-      - name: datastore
-        emptyDir: {}
+      #- name: datastore
+      #  emptyDir: {}
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
