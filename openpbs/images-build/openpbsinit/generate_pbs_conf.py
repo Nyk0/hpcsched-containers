@@ -10,7 +10,9 @@ def locate_db():
 	ret = v1.list_namespaced_pod("hpc-nico", label_selector="role=control-node")
 
 	for i in ret.items:
-		db_server = i.metadata.name
+		for containers in i.spec.containers:
+			if containers.name == "openpbs-server":
+				db_server = i.metadata.name
 	return db_server
 
 def generate(db_server):

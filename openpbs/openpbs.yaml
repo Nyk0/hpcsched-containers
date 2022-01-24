@@ -66,8 +66,19 @@ spec:
       containers:
       - name: openpbs-server
         image: nyk0/openpbs
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
+      - name: openpbs-init
+        image: nyk0/openpbsinit
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
       imagePullSecrets:
       - name: regcred
+      volumes:
+      - name: pbsconf
+        emptyDir: {}
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
