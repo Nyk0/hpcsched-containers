@@ -91,6 +91,8 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+        - mountPath: /var/spool/pbs/datastore
+          name: datastore
       - name: openpbs-postgres
         image: nyk0/openpbs
         #command: ["/bin/bash"]
@@ -98,10 +100,14 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+        - mountPath: /var/spool/pbs/datastore
+          name: datastore
       imagePullSecrets:
       - name: regcred
       volumes:
       - name: pbsconf
+        emptyDir: {}
+      - name: datastore
         emptyDir: {}
       dnsConfig:
         searches:
