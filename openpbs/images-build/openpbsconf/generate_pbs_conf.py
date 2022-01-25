@@ -2,6 +2,7 @@ from kubernetes import client, config
 import subprocess
 import time
 import socket
+import os
 
 nodes_to_partitions = dict()
 nodes_to_cpus = dict()
@@ -32,7 +33,8 @@ def get_nodes():
 					pass
 
 if __name__ == '__main__':
-
+	while os.path.isfile("/server.lock"):
+        	time.sleep(2)
 	previous_nodes_to_cpus = dict()
 	previous_partitions = []
 	add_nodes = dict()

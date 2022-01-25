@@ -16,6 +16,6 @@ WORKDIR "/"
 COPY start-pbs.sh ./
 COPY start-mom.sh ./
 
-RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && rm -rf openmpi-$ompi_version_minor && rm -f openmpi-$ompi_version_minor.tar.bz2 && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf && mkdir -p /var/spool/pbs/datastore
+RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && rm -rf openmpi-$ompi_version_minor && rm -f openmpi-$ompi_version_minor.tar.bz2 && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf && touch /server.lock
 
 CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
