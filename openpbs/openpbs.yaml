@@ -48,11 +48,18 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+        - mountPath: /home
+          name: home
+        securityContext:
+          privileged: true
       imagePullSecrets:
       - name: regcred
       volumes:
       - name: pbsconf
         emptyDir: {}
+      - name: home
+        persistentVolumeClaim:
+          claimName: pvc-nfs-home
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
@@ -93,10 +100,12 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+        - mountPath: /home
+          name: home
       - name: openpbs-conf
         image: nyk0/openpbsconf
-        #command: ["/bin/bash"]
-        #args: ["start-pbs.sh"]
+        command: ["/usr/local/bin/python"]
+        args: ["generate_pbs_conf.py"]
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
@@ -105,6 +114,9 @@ spec:
       volumes:
       - name: pbsconf
         emptyDir: {}
+      - name: home
+        persistentVolumeClaim:
+          claimName: pvc-nfs-home
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
