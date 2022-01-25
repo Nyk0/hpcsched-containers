@@ -93,6 +93,13 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
+      - name: openpbs-conf
+        image: nyk0/openpbsconf
+        #command: ["/bin/bash"]
+        #args: ["start-pbs.sh"]
+        volumeMounts:
+        - mountPath: /pbsconf
+          name: pbsconf
       imagePullSecrets:
       - name: regcred
       volumes:
