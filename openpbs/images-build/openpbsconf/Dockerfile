@@ -1,6 +1,6 @@
-FROM debian:latest
+FROM python:latest
 
-RUN apt-get update && apt-get install -y python3 procps git vim.tiny gcc make libtool libhwloc-dev libx11-dev libxt-dev libedit-dev libical-dev ncurses-dev perl postgresql-server-dev-all postgresql-contrib python3-dev tcl-dev tk-dev swig libexpat-dev libssl-dev libxext-dev libxft-dev autoconf automake g++ && apt-get clean && mkdir /pbsconf && git clone https://github.com/openpbs/openpbs.git && pip install --upgrade pip && pip install kubernetes
+RUN apt-get update && apt-get install -y procps git vim.tiny gcc make libtool libhwloc-dev libx11-dev libxt-dev libedit-dev libical-dev ncurses-dev perl postgresql-server-dev-all postgresql-contrib python3-dev tcl-dev tk-dev swig libexpat-dev libssl-dev libxext-dev libxft-dev autoconf automake g++ && apt-get clean && mkdir /pbsconf && git clone https://github.com/openpbs/openpbs.git && pip install --upgrade pip && pip install kubernetes
 
 WORKDIR "/openpbs"
 run ./autogen.sh && ./configure --prefix=/opt/pbs && make && make install
