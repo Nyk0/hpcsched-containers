@@ -3,6 +3,8 @@
 
 /opt/pbs/sbin/pbs_mom
 
+sleep 3
+
 while true
 do
 	pidof "pbs_mom" > /dev/null 2>&1

@@ -32,8 +32,8 @@ spec:
       initContainers:
       - name: openpbs-init
         image: nyk0/openpbsinit
-        #command: ["/usr/local/bin/python"]
-        #args: ["generate_pbs_conf_node.py"]
+        command: ["/usr/local/bin/python"]
+        args: ["generate_pbs_conf_node.py"]
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
@@ -87,8 +87,8 @@ spec:
       initContainers:
       - name: openpbs-init
         image: nyk0/openpbsinit
-        #command: ["/usr/local/bin/python"]
-        #args: ["generate_pbs_conf_server.py"]
+        command: ["/usr/local/bin/python"]
+        args: ["generate_pbs_conf_server.py"]
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
