@@ -8,7 +8,11 @@ run ./autogen.sh && ./configure --prefix=/opt/pbs && make && make install
 WORKDIR "/"
 
 COPY generate_pbs_conf.py ./
+COPY add_partition.sh ./
+COPY del_partition.sh ./
+COPY add_node.sh ./
+COPY del_node.sh ./
 
-RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf
+RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf && chmod a+x /*.sh
 
 CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
