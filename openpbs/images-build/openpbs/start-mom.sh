@@ -1,18 +1,5 @@
 #!/bin/bash
 
+source /etc/profile.d/pbs.sh
 
-/opt/pbs/sbin/pbs_mom
-
-sleep 3
-
-while true
-do
-	pidof "pbs_mom" > /dev/null 2>&1
-	if [ $? -ne 0 ]
-	then
-		exit 1
-	fi
-	sleep 2
-done
-
-exit 0
+/opt/pbs/sbin/pbs_mom -N
