@@ -45,6 +45,8 @@ spec:
           name: sock
         - mountPath: /locate
           name: locate
+        - mountPath: /home
+          name: home
         resources:
           limits:
             cpu: "2"
@@ -66,6 +68,9 @@ spec:
         emptyDir: {}
       - name: locate
         emptyDir: {}
+      - name: home
+        persistentVolumeClaim:
+          claimName: pvc-nfs-home
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
@@ -116,6 +121,8 @@ spec:
           name: sock
         - mountPath: /var/slurm
           name: var
+        - mountPath: /home
+          name: home
         command: ["/usr/bin/supervise"]
         args: ["/service/slurmctld"]
       - name: munge
@@ -134,6 +141,9 @@ spec:
         emptyDir: {}
       - name: var
         emptyDir: {}
+      - name: home
+        persistentVolumeClaim:
+          claimName: pvc-nfs-home
       dnsConfig:
         searches:
           - nodes.hpc-nico.svc.cluster.local
