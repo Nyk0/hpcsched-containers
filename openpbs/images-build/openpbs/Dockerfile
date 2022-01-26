@@ -9,13 +9,13 @@ WORKDIR "/openpbs"
 run ./autogen.sh && ./configure --prefix=/opt/pbs && make && make install
 
 WORKDIR "/openmpi-$ompi_version_minor"
-RUN ./configure && make && make install
+RUN export LD_LIBRARY_PATH=/opt/pbs/lib:$LD_LIBRARY_PATH && export LDFLAGS="-L/opt/pbs/lib -lpbs -lpthread -lcrypto" && ./configure --without-slurm --tm=/opt/pbs && make && make install
 
 WORKDIR "/"
 
 COPY start-pbs.sh ./
 COPY start-mom.sh ./
 
-RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && rm -rf openmpi-$ompi_version_minor && rm -f openmpi-$ompi_version_minor.tar.bz2 && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf && touch /server.lock
+RUN /opt/pbs/libexec/pbs_postinstall && rm -rf /openpbs && rm -rf openmpi-$ompi_version_minor && rm -f openmpi-$ompi_version_minor.tar.bz2 && chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp && rm -rf /etc/pbs.conf && ln -s /pbsconf/pbs.conf /etc/pbs.conf && touch /server.lock && echo "$usecp *:/home  /home" >> /opt/pbs/mom_priv/config 
 
 CMD exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
