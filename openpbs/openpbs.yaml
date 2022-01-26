@@ -40,8 +40,8 @@ spec:
       containers:
       - name: openpbs-node
         image: nyk0/openpbs
-        #command: ["/bin/bash"]
-        #args: ["start-mom.sh"]
+        command: ["/bin/bash"]
+        args: ["start-mom.sh"]
         resources:
           limits:
             cpu: "2"
