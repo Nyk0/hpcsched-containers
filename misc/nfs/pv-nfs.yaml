@@ -15,5 +15,5 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /nfs/home
+    path: /home
     server: admin.lab.local
