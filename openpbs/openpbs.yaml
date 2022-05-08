@@ -54,8 +54,8 @@ spec:
           name: home
         securityContext:
           privileged: true
-      imagePullSecrets:
-      - name: regcred
+#      imagePullSecrets:
+#      - name: regcred
       volumes:
       - name: pbsconf
         emptyDir: {}
@@ -111,8 +111,8 @@ spec:
         volumeMounts:
         - mountPath: /pbsconf
           name: pbsconf
-      imagePullSecrets:
-      - name: regcred
+#      imagePullSecrets:
+#      - name: regcred
       volumes:
       - name: pbsconf
         emptyDir: {}

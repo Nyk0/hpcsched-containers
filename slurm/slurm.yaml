@@ -61,8 +61,8 @@ spec:
           name: sock
         command: ["/bin/bash"]
         args: ["start-munge.sh"]
-      imagePullSecrets:
-      - name: regcred
+#      imagePullSecrets:
+#      - name: regcred
       volumes:
       - name: sock
         emptyDir: {}
@@ -132,8 +132,8 @@ spec:
           name: sock
         command: ["/bin/bash"]
         args: ["start-munge.sh"]
-      imagePullSecrets:
-      - name: regcred
+#      imagePullSecrets:
+#      - name: regcred
       volumes:
       - name: slurmconf-volume
         emptyDir: {}
